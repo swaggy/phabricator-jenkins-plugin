@@ -57,6 +57,7 @@ public class ApplyPatchTaskTest {
                 TestUtils.createLauncherFactory(j),
                 TestUtils.TEST_SHA,
                 TestUtils.TEST_DIFFERENTIAL_ID,
+                TestUtils.TEST_CONDUIT_GATEWAY,
                 TestUtils.TEST_CONDUIT_TOKEN,
                 arcPath,
                 gitPath, // git path

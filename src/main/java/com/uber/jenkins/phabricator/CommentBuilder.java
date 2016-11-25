@@ -116,7 +116,7 @@ class CommentBuilder {
             comment.append("Build is unstable");
         } else if (result == Result.FAILURE) {
             if (!runHarbormaster || commentWithConsoleLinkOnFailure) {
-                comment.append("Build has FAILED");
+                comment.append("Build has failed");
             }
         } else if (result == Result.ABORTED) {
             comment.append("Build was aborted");
@@ -164,7 +164,6 @@ class CommentBuilder {
      * Add a build failure message to the comment
      */
     public void addBuildFailureMessage() {
-        comment.append(String.format("\n\nLink to build: %s", buildURL));
-        comment.append(String.format("\nSee console output for more information: %sconsole", buildURL));
+        comment.append(String.format(": %sconsole", buildURL));
     }
 }

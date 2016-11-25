@@ -139,7 +139,7 @@ public class CommentBuilderTest {
     public void testProcessBuildResultWithFailureMessage() {
         CommentBuilder commenter = createCommenter(Result.FAILURE, null);
         commenter.processBuildResult(false, true, false);
-        assertEquals("Build has FAILED", commenter.getComment());
+        assertEquals("Build has failed", commenter.getComment());
     }
 
     @Test
@@ -194,8 +194,8 @@ public class CommentBuilderTest {
     public void testAddBuildFailureMessage() {
         commenter.addBuildFailureMessage();
         String comment = commenter.getComment();
-        assertTrue(comment.contains("See console output"));
-        assertTrue(comment.contains("Link to build"));
+        assertTrue(comment.contains(":"));
+        assertTrue(comment.contains("console"));
     }
 
     private CommentBuilder createCommenter(Result result, CodeCoverageMetrics coverage) {

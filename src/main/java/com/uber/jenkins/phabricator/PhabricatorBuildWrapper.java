@@ -146,11 +146,23 @@ public class PhabricatorBuildWrapper extends BuildWrapper {
             baseCommit = diff.getBaseCommit();
         }
 
-        final String conduitToken = this.getConduitToken(build.getParent(), logger);
+        ConduitCredentials credentials = getConduitCredentials(build.getParent());
+        final String conduitURI;
+        final String conduitToken;
+        if (credentials == null) {
+            logger.warn("credentials", "No credentials configured.");
+            conduitURI = null;
+            conduitToken = null;
+        } else {
+            conduitURI = credentials.getGateway();
+            conduitToken = getConduitToken(credentials);
+        }
+
         Task.Result result = new ApplyPatchTask(
-                logger, starter, baseCommit, diffID, conduitToken, getArcPath(),
-                DEFAULT_GIT_PATH, createCommit, skipForcedClean, createBranch,
-                patchWithForceFlag
+                logger, starter, baseCommit, diffID,
+                conduitURI, conduitToken,
+                getArcPath(), DEFAULT_GIT_PATH, createCommit,
+                skipForcedClean, createBranch, patchWithForceFlag
         ).run();
 
         if (result != Task.Result.SUCCESS) {
@@ -224,7 +236,7 @@ public class PhabricatorBuildWrapper extends BuildWrapper {
         if (credentials == null) {
             throw new ConduitAPIException("No credentials configured for conduit");
         }
-        return new ConduitAPIClient(credentials.getGateway(), getConduitToken(owner, logger));
+        return new ConduitAPIClient(credentials.getGateway(), getConduitToken(credentials));
     }
 
     private ConduitCredentials getConduitCredentials(Job owner) {
@@ -259,13 +271,8 @@ public class PhabricatorBuildWrapper extends BuildWrapper {
         return null;
     }
 
-    private String getConduitToken(Job owner, Logger logger) {
-        ConduitCredentials credentials = getConduitCredentials(owner);
-        if (credentials != null) {
-            return credentials.getToken().getPlainText();
-        }
-        logger.warn("credentials", "No credentials configured.");
-        return null;
+    private String getConduitToken(ConduitCredentials credentials) {
+        return credentials.getToken().getPlainText();
     }
 
     /**

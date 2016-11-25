@@ -74,8 +74,8 @@ public class HarbormasterClient {
      */
     public JSONObject sendHarbormasterUri(String phid, String buildUri) throws ConduitAPIException, IOException {
         JSONObject artifactData = new JSONObject();
-        artifactData = artifactData.element("uri", buildUri)
-                .element("name", "Jenkins")
+        artifactData = artifactData.element("uri", buildUri + "console")
+                .element("name", "View in Jenkins")
                 .element("ui.external", true);
 
         JSONObject params = new JSONObject();

@@ -35,6 +35,7 @@ public class ApplyPatchTask extends Task {
     private final String baseCommit;
     private final String diffID;
     private final PrintStream logStream;
+    private final String conduitURI;
     private final String conduitToken;
     private final String arcPath;
     private final boolean createCommit;
@@ -44,13 +45,14 @@ public class ApplyPatchTask extends Task {
     private final boolean patchWithForceFlag;
 
     public ApplyPatchTask(Logger logger, LauncherFactory starter, String baseCommit,
-                          String diffID, String conduitToken, String arcPath,
-                          String gitPath, boolean createCommit, boolean skipForcedClean,
-                          boolean createBranch, boolean patchWithForceFlag) {
+                          String diffID, String conduitURI, String conduitToken,
+                          String arcPath, String gitPath, boolean createCommit,
+                          boolean skipForcedClean, boolean createBranch, boolean patchWithForceFlag) {
         super(logger);
         this.starter = starter;
         this.baseCommit = baseCommit;
         this.diffID = diffID;
+        this.conduitURI = conduitURI;
         this.conduitToken = conduitToken;
         this.arcPath = arcPath;
         this.gitPath = gitPath;
@@ -97,7 +99,7 @@ public class ApplyPatchTask extends Task {
                 // Clean workspace, otherwise `arc patch` may fail
                 starter.launch()
                     .stdout(logStream)
-                    .cmds(Arrays.asList(gitPath, "clean", "-fd", "-f"))
+                    .cmds(Arrays.asList("sudo", gitPath, "clean", "-fd", "-f"))
                     .join();
             }
 
@@ -119,6 +121,8 @@ public class ApplyPatchTask extends Task {
             if (patchWithForceFlag) {
                 arcPatchParams.add("--force");
             }
+
+            arcPatchParams.addAll(Arrays.asList("--conduit-uri", conduitURI));
 
             ArcanistClient arc = new ArcanistClient(
                     arcPath,

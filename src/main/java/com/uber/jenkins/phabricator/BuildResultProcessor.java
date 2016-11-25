@@ -187,6 +187,7 @@ public class BuildResultProcessor {
 
         if (commentWithConsoleLinkOnFailure && buildResult.isWorseOrEqualTo(hudson.model.Result.UNSTABLE)) {
             commenter.addBuildFailureMessage();
+            commentAction = "reject";
         } else {
             commenter.addBuildLink();
         }
